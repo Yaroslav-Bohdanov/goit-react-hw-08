@@ -1,45 +1,42 @@
-import Contact from "../Contact/Contact";
-import style from "./ContactList.module.css";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchContacts, deleteContact } from "../../redux/contactsSlice";
-import {
-  selectFilteredContacts,
-  selectLoading,
-  selectError,
-} from "../../redux/contactsSlice";
+import { deleteContact, fetchContacts } from "../redux/contactsOps";
 
 const ContactList = () => {
   const dispatch = useDispatch();
-  const filteredContacts = useSelector(selectFilteredContacts);
-  const isLoading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  const contacts = useSelector((state) => state.contacts.items);
+  const loading = useSelector((state) => state.contacts.loading);
+  const error = useSelector((state) => state.contacts.error);
 
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
-
-  const handleDelete = (contactId) => {
-    dispatch(deleteContact(contactId));
+  const handleDeleteContact = (id) => {
+    dispatch(deleteContact(id))
+      .then(() => {
+        dispatch(fetchContacts());
+      })
+      .catch((error) => {
+        console.error("Error deleting contact:", error);
+      });
   };
 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error loading contacts: {error}</p>;
+  }
+
   return (
-    <>
-      {isLoading && <p>Loading contacts...</p>}
-      {error && <p>Error: {error}</p>}
-      <ul className={style.contactList}>
-        {filteredContacts.map(({ id, name, number }) => (
-          <li key={id}>
-            <Contact
-              id={id}
-              name={name}
-              number={number}
-              onDelete={handleDelete}
-            />
-          </li>
-        ))}
-      </ul>
-    </>
+    <ul>
+      {contacts.map((contact) => (
+        <li key={contact.id}>
+          {contact.name} - {contact.phone}
+          <button onClick={() => handleDeleteContact(contact.id)}>
+            Delete
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 };
 
