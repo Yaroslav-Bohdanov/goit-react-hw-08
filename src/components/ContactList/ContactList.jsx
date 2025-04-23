@@ -1,21 +1,24 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteContact, fetchContacts } from "../redux/contactsOps";
+import { deleteContact } from "../../redux/contactsOps";
+import {
+  selectFilteredContacts,
+  selectLoading,
+  selectError,
+} from "../../redux/contactsSlice";
+import Contact from "../Contact/Contact";
+import s from "./ContactList.module.css";
 
 const ContactList = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector((state) => state.contacts.items);
-  const loading = useSelector((state) => state.contacts.loading);
-  const error = useSelector((state) => state.contacts.error);
+  const contacts = useSelector(selectFilteredContacts);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   const handleDeleteContact = (id) => {
-    dispatch(deleteContact(id))
-      .then(() => {
-        dispatch(fetchContacts());
-      })
-      .catch((error) => {
-        console.error("Error deleting contact:", error);
-      });
+    dispatch(deleteContact(id)).catch((error) => {
+      console.error("Error deleting contact:", error);
+    });
   };
 
   if (loading) {
@@ -27,13 +30,15 @@ const ContactList = () => {
   }
 
   return (
-    <ul>
+    <ul className={s.list}>
       {contacts.map((contact) => (
-        <li key={contact.id}>
-          {contact.name} - {contact.phone}
-          <button onClick={() => handleDeleteContact(contact.id)}>
-            Delete
-          </button>
+        <li key={contact.id} className={s.item}>
+          <Contact
+            id={contact.id}
+            name={contact.name}
+            number={contact.number}
+            onDelete={handleDeleteContact}
+          />
         </li>
       ))}
     </ul>
