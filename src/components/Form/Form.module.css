@@ -1,0 +1,5 @@
+.formContainer {
+  display: grid;
+  grid-gap: 20px;
+  list-style: none;
+}
