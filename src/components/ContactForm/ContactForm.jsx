@@ -1,4 +1,3 @@
-import { nanoid } from "nanoid";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import style from "./ContactForm.module.css";
@@ -32,9 +31,7 @@ const ContactForm = () => {
       return;
     }
 
-    dispatch(
-      addContact({ id: nanoid(), name: values.name, number: values.phone })
-    );
+    dispatch(addContact({ name: values.name, number: values.phone }));
     resetForm();
     toast.success("Contact created successfully", { transition: Slide });
   };
