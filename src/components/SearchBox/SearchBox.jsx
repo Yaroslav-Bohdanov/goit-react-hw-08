@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changeFiter } from "../../redux/filters/slice";
+import { changeFilter } from "../../redux/filters/slice";
 import { selectFilter } from "../../redux/contacts/selectors";
 import s from "./SearchBox.module.css";
 
@@ -9,7 +9,7 @@ const SearchBox = () => {
   const dispatch = useDispatch();
 
   const handleSearch = (e) => {
-    dispatch(changeFiter(e.target.value));
+    dispatch(changeFilter(e.target.value));
   };
 
   return (

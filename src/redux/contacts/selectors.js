@@ -7,3 +7,4 @@ export const selectFilteredContacts = (state) => {
 export const getContacts = (state) => {
   return state.contacts.items;
 };
+export const selectFilter = (state) => state.filter.text;

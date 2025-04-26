@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import SearchBox from "../../components/SearchBox/SearchBox";
 import {
   fetchContactsThunk,
   deleteContactThunk,
@@ -55,7 +56,7 @@ export const Contacts = () => {
   return (
     <div>
       <ContactForm onAdd={handleAddContact} onUpdate={handleUpdateContact} />
-      <h2>Контакти</h2>
+      <SearchBox />
       <ContactList
         contacts={filteredContacts}
         onDelete={handleDelete}
