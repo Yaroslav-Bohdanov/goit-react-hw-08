@@ -1,61 +1,61 @@
-import { Routes, Route } from "react-router-dom";
-import { lazy, Suspense, useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { refreshUser } from "./redux/auth/operations";
-import { useAuth } from "./hooks/useAuth";
 
+import { ToastContainer } from "react-toastify";
+
+import Loader from "./components/Loader/Loader";
 import Layout from "./components/Layout/Layout";
-import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import RestrictedRoute from "./components/RestrictedRoute/RestrictedRoute";
-import Loader from "./components/Loader/Loader"; // для відображення поки вантажиться
 
-const HomePage = lazy(() => import("./pages/Home/Home"));
-const RegisterPage = lazy(() => import("./pages/Registration/Registration"));
-const LoginPage = lazy(() => import("./pages/Login/Login"));
-const ContactsPage = lazy(() => import("./pages/Contacts/Contacts"));
+import RestrictedRoute from "./components/RestrictedRoute/RestrictedRoute";
+import { refreshUserThunk } from "./redux/auth/operations";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+
+const Registration = lazy(() => import("./pages/Registration/Registration"));
+const Login = lazy(() => import("./pages/Login/Login"));
+const Contacts = lazy(() => import("./pages/Contacts/Contacts"));
+const Home = lazy(() => import("./pages/Home/Home"));
 
 function App() {
   const dispatch = useDispatch();
-  const { isRefreshing } = useAuth();
 
   useEffect(() => {
-    dispatch(refreshUser());
+    dispatch(refreshUserThunk());
   }, [dispatch]);
 
-  if (isRefreshing) {
-    return <Loader />; // або просто <div>Loading...</div>
-  }
-
   return (
-    <Suspense fallback={<Loader />}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
+    <Layout>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
           <Route
             path="/register"
             element={
               <RestrictedRoute
+                component={<Registration />}
                 redirectTo="/contacts"
-                element={<RegisterPage />}
               />
             }
           />
           <Route
             path="/login"
             element={
-              <RestrictedRoute redirectTo="/contacts" element={<LoginPage />} />
+              <RestrictedRoute component={<Login />} redirectTo="/contacts" />
             }
           />
           <Route
             path="/contacts"
             element={
-              <PrivateRoute redirectTo="/login" element={<ContactsPage />} />
+              <PrivateRoute>
+                <Contacts />
+              </PrivateRoute>
             }
           />
-          <Route path="*" element={<HomePage />} />
-        </Route>
-      </Routes>
-    </Suspense>
+        </Routes>
+
+        <ToastContainer />
+      </Suspense>
+    </Layout>
   );
 }
 

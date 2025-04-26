@@ -1,17 +1,56 @@
-// operations.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { authentificationInstance } from "../auth/operations";
 
-// Створення асинхронного запиту для додавання контакту
-export const addContactThunk = createAsyncThunk(
-  "contacts/addContact",
-  async (newContact) => {
+export const fetchContactsThunk = createAsyncThunk(
+  "contacts/fetchAll",
+  async (_, thunkAPI) => {
     try {
-      // Відправка POST запиту для додавання контакту
-      const response = await axios.post("/api/contacts", newContact);
-      return response.data; // Повертає доданий контакт
+      const response = await authentificationInstance.get("/contacts");
+      return response.data;
     } catch (error) {
-      throw new Error(error.message); // Якщо помилка, викидає її
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const addContactThunk = createAsyncThunk(
+  "contacts/add",
+  async (contact, thunkAPI) => {
+    try {
+      const response = await authentificationInstance.post(
+        "/contacts",
+        contact
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteContactThunk = createAsyncThunk(
+  "contacts/delete",
+  async (contactId, thunkAPI) => {
+    try {
+      await authentificationInstance.delete(`/contacts/${contactId}`);
+      return contactId;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateContact = createAsyncThunk(
+  "contacts/update",
+  async (contact, thunkAPI) => {
+    try {
+      const response = await authentificationInstance.patch(
+        "/contacts",
+        contact
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );

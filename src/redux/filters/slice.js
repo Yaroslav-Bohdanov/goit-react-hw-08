@@ -4,15 +4,15 @@ const initialState = {
   text: "",
 };
 
-export const slice = createSlice({
+const filterSlice = createSlice({
   name: "filter",
   initialState,
   reducers: {
-    changeFiter: (state, action) => {
+    changeFilter: (state, action) => {
       state.text = action.payload;
     },
   },
 });
 
-export default slice.reducer; // змінено на default експорт
-export const { changeFiter } = slice.actions;
+export const filterReducer = filterSlice.reducer;
+export const { changeFilter } = filterSlice.actions;

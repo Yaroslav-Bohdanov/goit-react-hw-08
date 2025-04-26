@@ -1,34 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  fetchContacts,
-  deleteContact,
-  addContact,
+  fetchContactsThunk,
+  deleteContactThunk,
+  addContactThunk,
   updateContact,
 } from "../../redux/contacts/operations";
-import {
-  getContacts,
-  getLoading,
-  getError,
-} from "../../redux/contacts/selectors";
+import { getContacts } from "../../redux/contacts/selectors";
 import { getFilter } from "../../redux/filters/selectors";
-import ContactForm from "../../components/ContactForm";
-import ContactList from "../../components/ContactList";
-import Loader from "../../components/Loader";
+import ContactForm from "../../components/ContactForm/ContactForm";
+import ContactList from "../../components/ContactList/ContactList";
 import { toast } from "react-hot-toast";
-import Modal from "../../components/Modal"; // імпортуємо модальне вікно для підтвердження видалення
 
-const Contacts = () => {
+export const Contacts = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
-  const loading = useSelector(getLoading);
-  const error = useSelector(getError);
   const filter = useSelector(getFilter);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [contactToDelete, setContactToDelete] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(fetchContactsThunk());
   }, [dispatch]);
 
   const filteredContacts = contacts.filter((contact) =>
@@ -41,7 +33,7 @@ const Contacts = () => {
   };
 
   const confirmDelete = () => {
-    dispatch(deleteContact(contactToDelete));
+    dispatch(deleteContactThunk(contactToDelete));
     toast.success("Контакт видалено");
     setIsModalOpen(false);
   };
@@ -51,7 +43,7 @@ const Contacts = () => {
   };
 
   const handleAddContact = (contact) => {
-    dispatch(addContact(contact));
+    dispatch(addContactThunk(contact));
     toast.success("Контакт додано!");
   };
 
@@ -64,8 +56,6 @@ const Contacts = () => {
     <div>
       <ContactForm onAdd={handleAddContact} onUpdate={handleUpdateContact} />
       <h2>Контакти</h2>
-      {loading && <Loader />}
-      {error && <p>{error}</p>}
       <ContactList
         contacts={filteredContacts}
         onDelete={handleDelete}

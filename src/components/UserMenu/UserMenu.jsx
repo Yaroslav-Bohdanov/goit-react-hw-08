@@ -1,17 +1,16 @@
-// UserMenu.js
 import { useDispatch, useSelector } from "react-redux";
-import s from "./UserMenu.module.css"; // Ваші стилі
-import { selectUserName } from "../../redux/auth/selectors"; // Селектор для отримання даних користувача
-import { logoutThunk } from "../../redux/auth/operations"; // Логіка логауту
-import { Slide, toast } from "react-toastify"; // Для сповіщень
+import s from "./UserMenu.module.css";
+import { selectUser } from "../../redux/auth/selectors";
+import { logoutThunk } from "../../redux/auth/operations";
+import { Slide, toast } from "react-toastify";
 
 const UserMenu = () => {
-  const user = useSelector(selectUserName); // Отримуємо користувача зі state
-  const dispatch = useDispatch(); // Отримуємо dispatch для виклику асинхронних операцій
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     try {
-      await dispatch(logoutThunk()).unwrap(); // Викликаємо асинхронну операцію logout
+      await dispatch(logoutThunk()).unwrap();
       toast("Goodbye, hope to see you again soon!", {
         position: "bottom-center",
         autoClose: 3000,
@@ -24,7 +23,7 @@ const UserMenu = () => {
         transition: Slide,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast("Something went wrong, please try again", {
         position: "bottom-center",
         autoClose: 3000,
@@ -42,7 +41,7 @@ const UserMenu = () => {
   return (
     <div className={s.authList}>
       <p className={s.userWelcome}>
-        Welcome, <span>{user.name}</span> {/* Виводимо ім'я користувача */}
+        Welcome, <span>{user.name}</span>
       </p>
       <button type="button" onClick={handleLogout} className={s.button}>
         Logout

@@ -1,31 +1,60 @@
-// slice.js
-import { createSlice } from "@reduxjs/toolkit";
-import { addContactThunk } from "../contacts/operations"; // Імпортуємо асинхронну операцію
+import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import {
+  addContactThunk,
+  deleteContactThunk,
+  fetchContactsThunk,
+} from "./operations";
+import { logoutThunk } from "../auth/operations";
+
+const initialState = {
+  items: [],
+  isError: false,
+  isLoading: false,
+};
 
 const contactsSlice = createSlice({
   name: "contacts",
-  initialState: {
-    items: [],
-    isLoading: false,
-    error: null,
-  },
-  reducers: {
-    // Ваші синхронні редуктори
-  },
+  initialState,
+
   extraReducers: (builder) => {
     builder
-      .addCase(addContactThunk.pending, (state) => {
-        state.isLoading = true;
+      .addCase(fetchContactsThunk.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(deleteContactThunk.fulfilled, (state, action) => {
+        state.items = state.items.filter((item) => item.id !== action.payload);
+        state.isLoading = false;
       })
       .addCase(addContactThunk.fulfilled, (state, action) => {
+        state.items.push(action.payload);
         state.isLoading = false;
-        state.items.push(action.payload); // Додаємо новий контакт в state
       })
-      .addCase(addContactThunk.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message; // Зберігаємо помилку в state
-      });
+      .addCase(logoutThunk.fulfilled, () => initialState)
+      .addMatcher(
+        isAnyOf(
+          fetchContactsThunk.pending,
+          deleteContactThunk.pending,
+          addContactThunk.pending,
+          logoutThunk.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchContactsThunk.rejected,
+          deleteContactThunk.rejected,
+          addContactThunk.rejected,
+          logoutThunk.rejected
+        ),
+        (state, action) => {
+          state.isError = action.payload;
+          state.isLoading = false;
+        }
+      );
   },
 });
 
-export const contactsReducer = contactsSlice.reducer;
+export const contactReducer = contactsSlice.reducer;

@@ -1,30 +1,59 @@
-import React, { useState, useEffect } from "react";
-import { Formik, Form, Field } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { addContactThunk } from "../../redux/contacts/operations";
+import s from "./ContactForm.module.css";
 
-const ContactForm = ({ onAdd, onUpdate, contactToEdit }) => {
-  const [initialValues, setInitialValues] = useState({ name: "", phone: "" });
+const initialValues = {
+  name: "",
+  number: "",
+};
 
-  useEffect(() => {
-    if (contactToEdit) {
-      setInitialValues(contactToEdit);
-    }
-  }, [contactToEdit]);
+const validationSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, "Min 3 characters")
+    .max(50, "Max 50 characters")
+    .required("This field is required"),
+  number: Yup.string()
+    .min(3, "Min 3 characters")
+    .max(50, "Max 50 characters")
+    .required("This field is required"),
+});
 
-  const handleSubmit = (values) => {
-    if (contactToEdit) {
-      onUpdate(values);
-    } else {
-      onAdd(values);
-    }
+const ContactForm = () => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = (values, actions) => {
+    dispatch(addContactThunk(values));
+    actions.resetForm();
+    toast.success("Contact created successfully", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      theme: "light",
+    });
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      <Form>
-        <Field name="name" placeholder="Name" />
-        <Field name="phone" placeholder="Phone" />
-        <button type="submit">
-          {contactToEdit ? "Update" : "Add"} Contact
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      <Form className={s.form}>
+        <label>
+          <h3>Name</h3>
+          <Field type="text" name="name" className={s.formInput} />
+          <ErrorMessage name="name" component="p" className={s.error} />
+        </label>
+        <label>
+          <h3>Phone number</h3>
+          <Field type="text" name="number" className={s.formInput} />
+          <ErrorMessage name="number" component="p" className={s.error} />
+        </label>
+        <button type="submit" className={s.buttonAddContact}>
+          Add Contact
         </button>
       </Form>
     </Formik>
