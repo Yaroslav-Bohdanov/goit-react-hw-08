@@ -1,54 +1,31 @@
+// slice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchContacts, addContact, deleteContact } from "./operations";
-
-const initialState = {
-  items: [],
-  isLoading: false,
-  error: null,
-};
+import { addContactThunk } from "../contacts/operations"; // Імпортуємо асинхронну операцію
 
 const contactsSlice = createSlice({
   name: "contacts",
-  initialState,
-  reducers: {},
+  initialState: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  reducers: {
+    // Ваші синхронні редуктори
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchContacts.pending, (state) => {
+      .addCase(addContactThunk.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchContacts.fulfilled, (state, action) => {
-        state.items = action.payload;
+      .addCase(addContactThunk.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.items.push(action.payload); // Додаємо новий контакт в state
       })
-      .addCase(fetchContacts.rejected, (state, action) => {
+      .addCase(addContactThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(addContact.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(addContact.fulfilled, (state, action) => {
-        state.items.push(action.payload);
-        state.isLoading = false;
-      })
-      .addCase(addContact.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(deleteContact.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(deleteContact.fulfilled, (state, action) => {
-        state.items = state.items.filter(
-          (contact) => contact.id !== action.payload
-        );
-        state.isLoading = false;
-      })
-      .addCase(deleteContact.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.error.message; // Зберігаємо помилку в state
       });
   },
 });
 
-export default contactsSlice.reducer;
+export const contactsReducer = contactsSlice.reducer;

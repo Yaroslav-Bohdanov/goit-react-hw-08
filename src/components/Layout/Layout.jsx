@@ -1,13 +1,16 @@
+import React from "react";
+import AppBar from "../AppBar/AppBar";
 import { Outlet } from "react-router-dom";
-import AppBar from "./AppBar";
 
-export default function Layout() {
+const Layout = () => {
   return (
     <div>
       <AppBar />
-      <main style={{ padding: "20px" }}>
+      <main>
         <Outlet />
       </main>
     </div>
   );
-}
+};
+
+export default Layout;

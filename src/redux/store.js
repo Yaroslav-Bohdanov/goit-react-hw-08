@@ -1,26 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import authReducer from "./auth/slice";
-import contactsReducer from "./contacts/slice";
-import filtersReducer from "./filters/slice";
-
-const persistConfig = {
-  key: "auth",
-  storage,
-  whitelist: ["token"],
-};
-
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+import authReducer from "./auth/slice"; // Імпортуємо редуктор за допомогою default
 
 const store = configureStore({
   reducer: {
-    auth: persistedAuthReducer,
-    contacts: contactsReducer,
-    filters: filtersReducer,
+    auth: authReducer, // Замість import { authReducer } ми імпортуємо його як authReducer
   },
 });
 
-const persistor = persistStore(store);
-
-export { store, persistor };
+export default store;

@@ -1,36 +1,16 @@
-import { MdDeleteOutline } from "react-icons/md";
-import { FaUser } from "react-icons/fa6";
-import { FaPhoneAlt } from "react-icons/fa";
-import { toast, Slide } from "react-toastify";
-import style from "./Contact.module.css";
+import React from "react";
 
-const Contact = ({ id, name, number, onDelete }) => {
-  const handleDelete = () => {
-    onDelete(id);
-    toast.success("Contact deleted", {
-      transition: Slide,
-      icon: <MdDeleteOutline />,
-      className: style.customToastDelete,
-    });
-  };
+const Contact = ({ contact, onDelete, onUpdate }) => {
+  const handleDelete = () => onDelete(contact.id);
+  const handleUpdate = () => onUpdate(contact.id);
 
   return (
-    <div className={style.contactItem}>
-      <p className={style.contactItemText}>
-        <FaUser />
-        {name}
+    <div>
+      <p>
+        {contact.name}: {contact.phone}
       </p>
-      <p className={style.contactItemText}>
-        <FaPhoneAlt />
-        {number}
-      </p>
-      <button
-        className={style.buttonDeleteContact}
-        onClick={handleDelete}
-        type="button"
-      >
-        Delete
-      </button>
+      <button onClick={handleUpdate}>Edit</button>
+      <button onClick={handleDelete}>Delete</button>
     </div>
   );
 };

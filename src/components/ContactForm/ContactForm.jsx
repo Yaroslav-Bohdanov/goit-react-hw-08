@@ -1,65 +1,33 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import style from "./ContactForm.module.css";
-import { useDispatch, useSelector } from "react-redux";
-import { addContact } from "../../redux/contactsOps";
-import { toast, Slide } from "react-toastify";
+import React, { useState, useEffect } from "react";
+import { Formik, Form, Field } from "formik";
 
-const initialValues = {
-  name: "",
-  phone: "",
-};
+const ContactForm = ({ onAdd, onUpdate, contactToEdit }) => {
+  const [initialValues, setInitialValues] = useState({ name: "", phone: "" });
 
-const registerSchema = Yup.object().shape({
-  name: Yup.string().min(3).max(50).required("Required"),
-  phone: Yup.string().min(3).max(50).required("Required"),
-});
-
-const ContactForm = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector((state) => state.contacts.items);
-
-  const handleSubmit = (values, { resetForm }) => {
-    const isDuplicate = contacts.some(
-      (c) =>
-        c.name.toLowerCase() === values.name.toLowerCase() ||
-        c.number === values.phone
-    );
-
-    if (isDuplicate) {
-      toast.error("This contact already exists!");
-      return;
+  useEffect(() => {
+    if (contactToEdit) {
+      setInitialValues(contactToEdit);
     }
+  }, [contactToEdit]);
 
-    dispatch(addContact({ name: values.name, number: values.phone }));
-    resetForm();
-    toast.success("Contact created successfully", { transition: Slide });
+  const handleSubmit = (values) => {
+    if (contactToEdit) {
+      onUpdate(values);
+    } else {
+      onAdd(values);
+    }
   };
 
   return (
-    <div className={style.formWrapper}>
-      <Formik
-        onSubmit={handleSubmit}
-        validationSchema={registerSchema}
-        initialValues={initialValues}
-      >
-        <Form className={style.form}>
-          <label className={style.formLabel}>
-            <h3>Name</h3>
-            <Field className={style.formInput} type="text" name="name" />
-            <ErrorMessage className={style.error} name="name" component="p" />
-          </label>
-          <label className={style.formLabel}>
-            <h3>Phone</h3>
-            <Field className={style.formInput} type="text" name="phone" />
-            <ErrorMessage className={style.error} name="phone" component="p" />
-          </label>
-          <button className={style.buttonAddContact} type="submit">
-            Add contact
-          </button>
-        </Form>
-      </Formik>
-    </div>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <Form>
+        <Field name="name" placeholder="Name" />
+        <Field name="phone" placeholder="Phone" />
+        <button type="submit">
+          {contactToEdit ? "Update" : "Add"} Contact
+        </button>
+      </Form>
+    </Formik>
   );
 };
 

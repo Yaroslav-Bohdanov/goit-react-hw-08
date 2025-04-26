@@ -1,6 +1,16 @@
-import style from "./Form.module.css";
-const Form = ({ children }) => {
-  return <div className={style.formContainer}>{children}</div>;
+import React from "react";
+import { Formik, Form, Field } from "formik";
+
+const FormComponent = ({ onSubmit }) => {
+  return (
+    <Formik initialValues={{ name: "", email: "" }} onSubmit={onSubmit}>
+      <Form>
+        <Field name="name" placeholder="Name" />
+        <Field name="email" placeholder="Email" />
+        <button type="submit">Submit</button>
+      </Form>
+    </Formik>
+  );
 };
 
-export default Form;
+export default FormComponent;

@@ -1,23 +1,14 @@
-import Navigation from "./Navigation";
-import AuthNav from "./AuthNav";
-import UserMenu from "./UserMenu";
-import { useSelector } from "react-redux";
-import { selectIsLoggedIn } from "../redux/auth/selectors";
+// components/AppBar/AppBar.jsx
+import React from "react";
+import UserMenu from "../UserMenu/UserMenu"; // Додаємо правильний шлях
 
-export default function AppBar() {
-  const isLoggedIn = useSelector(selectIsLoggedIn);
-
+const AppBar = () => {
   return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "10px 20px",
-        borderBottom: "1px solid #ccc",
-      }}
-    >
-      <Navigation />
-      {isLoggedIn ? <UserMenu /> : <AuthNav />}
+    <header>
+      {/* інші елементи AppBar */}
+      <UserMenu /> {/* тут використовується компонент UserMenu */}
     </header>
   );
-}
+};
+
+export default AppBar;
