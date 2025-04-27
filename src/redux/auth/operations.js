@@ -16,7 +16,7 @@ const clearAuthHeader = () => {
 };
 
 export const registrationThunk = createAsyncThunk(
-  "auth/register",
+  "authorization/register",
   async (userData) => {
     const response = await authentificationInstance.post(
       "/users/signup",
@@ -27,22 +27,28 @@ export const registrationThunk = createAsyncThunk(
   }
 );
 
-export const loginThunk = createAsyncThunk("auth/login", async (userData) => {
-  const response = await authentificationInstance.post(
-    "/users/login",
-    userData
-  );
-  setAuthHeader(response.data.token);
-  return response.data;
-});
+export const loginThunk = createAsyncThunk(
+  "authorization/login",
+  async (userData) => {
+    const response = await authentificationInstance.post(
+      "/users/login",
+      userData
+    );
+    setAuthHeader(response.data.token);
+    return response.data;
+  }
+);
 
-export const logoutThunk = createAsyncThunk("auth/logout", async () => {
-  await authentificationInstance.post("/users/logout");
-  clearAuthHeader();
-});
+export const logoutThunk = createAsyncThunk(
+  "authorization/logout",
+  async () => {
+    await authentificationInstance.post("/users/logout");
+    clearAuthHeader();
+  }
+);
 
 export const refreshUserThunk = createAsyncThunk(
-  "auth/refresh",
+  "authorization/refresh",
   async (_, { getState }) => {
     const token = getState().authorization.token;
     if (!token) throw new Error("No token");
