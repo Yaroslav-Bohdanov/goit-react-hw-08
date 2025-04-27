@@ -1,10 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "https://connections-api.goit.global/";
-
 export const authentificationInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: "https://connections-api.goit.global",
 });
 
 const setAuthHeader = (token) => {
@@ -17,38 +15,61 @@ const clearAuthHeader = () => {
 
 export const registrationThunk = createAsyncThunk(
   "auth/register",
-  async (userData) => {
-    const response = await authentificationInstance.post(
-      "/users/signup",
-      userData
-    );
-    setAuthHeader(response.data.token);
-    return response.data;
+  async (credentials, thunkAPI) => {
+    try {
+      const { data } = await authentificationInstance.post(
+        "/users/signup",
+        credentials
+      );
+      setAuthHeader(data.token);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
 
-export const loginThunk = createAsyncThunk("auth/login", async (userData) => {
-  const response = await authentificationInstance.post(
-    "/users/login",
-    userData
-  );
-  setAuthHeader(response.data.token);
-  return response.data;
-});
+export const loginThunk = createAsyncThunk(
+  "auth/login",
+  async (credentials, thunkAPI) => {
+    try {
+      const { data } = await authentificationInstance.post(
+        "/users/login",
+        credentials
+      );
+      setAuthHeader(data.token);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
-export const logoutThunk = createAsyncThunk("auth/logout", async () => {
-  await authentificationInstance.post("/users/logout");
-  clearAuthHeader();
-});
-
+export const logoutThunk = createAsyncThunk(
+  "auth/logout",
+  async (__, thunkAPI) => {
+    try {
+      await authentificationInstance.post("/users/logout");
+      clearAuthHeader();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 export const refreshUserThunk = createAsyncThunk(
-  "auth/refresh",
-  async (_, { getState }) => {
-    const token = getState().authorization.token;
-    if (!token) throw new Error("No token");
-    const response = await authentificationInstance.get("/users/current", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
+  "refresh",
+  async (_, thunkAPI) => {
+    const savedToken = thunkAPI.getState().authorization.token;
+    if (!savedToken) {
+      return thunkAPI.rejectWithValue("token doesn't exist!");
+    }
+    setAuthHeader(savedToken);
+
+    try {
+      const response = await authentificationInstance.get("/users/current");
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
