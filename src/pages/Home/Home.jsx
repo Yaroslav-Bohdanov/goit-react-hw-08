@@ -1,10 +1,10 @@
 import React from "react";
+import s from "./Home.module.css";
 
 const Home = () => {
   return (
-    <div>
-      <h1>Welcome to the Contacts App</h1>
-      <p>Manage your contacts easily!</p>
+    <div className={s.homeWrapper}>
+      <h1 className={s.homeTitle}>Welcome to the Contacts App</h1>
     </div>
   );
 };

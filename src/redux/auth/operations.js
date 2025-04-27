@@ -22,7 +22,6 @@ export const registrationThunk = createAsyncThunk(
       "/users/signup",
       userData
     );
-
     setAuthHeader(response.data.token);
     return response.data;
   }

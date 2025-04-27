@@ -1,0 +1,25 @@
+.authList {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  gap: 20px;
+  padding-left: 0;
+}
+
+.link {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 20px;
+  color: brown;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  padding: 5px 15px;
+}
+.active {
+  border-radius: 5px;
+  padding: 5px 15px;
+  text-decoration: none;
+  color: gray;
+  font-size: 30px;
+}

@@ -46,7 +46,7 @@ const LoginForm = () => {
 
   return (
     <div className={s.formWrapper}>
-      <h1 className={s.header}>Already have an account? Please log in</h1>
+      <h1 className={s.header}>Log In to Your Account</h1>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         <Form className={s.form}>
           <label>

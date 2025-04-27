@@ -16,6 +16,18 @@ const contactsSlice = createSlice({
   name: "contacts",
   initialState,
 
+  reducers: {
+    fetchSuccess: (state, action) => {
+      state.items = action.payload;
+      state.isLoading = false;
+    },
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    setIsError: (state, action) => {
+      state.isError = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchContactsThunk.fulfilled, (state, action) => {

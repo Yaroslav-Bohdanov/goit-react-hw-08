@@ -24,9 +24,9 @@
 }
 
 .label {
+  display: block;
+  align-self: center;
   color: brown;
-  font-size: 16px;
-  margin-bottom: 5px;
 }
 
 .input {

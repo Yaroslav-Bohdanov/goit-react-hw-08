@@ -12,6 +12,7 @@ import { getFilter } from "../../redux/filters/selectors";
 import ContactForm from "../../components/ContactForm/ContactForm";
 import ContactList from "../../components/ContactList/ContactList";
 import { toast } from "react-hot-toast";
+import { selectIsLoggedIn } from "../../redux/auth/selectors";
 
 export const Contacts = () => {
   const dispatch = useDispatch();
@@ -19,10 +20,13 @@ export const Contacts = () => {
   const filter = useSelector(getFilter);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [contactToDelete, setContactToDelete] = useState(null);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   useEffect(() => {
-    dispatch(fetchContactsThunk());
-  }, [dispatch]);
+    if (isLoggedIn) {
+      dispatch(fetchContactsThunk());
+    }
+  }, [dispatch, isLoggedIn]);
 
   const filteredContacts = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(filter.toLowerCase())

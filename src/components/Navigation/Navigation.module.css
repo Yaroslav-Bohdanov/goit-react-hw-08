@@ -1,0 +1,25 @@
+.navBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.link {
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #f0f8ff;
+  background-color: gray;
+  transition: background-color 250ms, transform 250ms;
+}
+
+.active {
+  background-color: gray;
+  color: brown;
+  font-size: 22px;
+  border-radius: 6px;
+  padding: 8px 16px;
+}

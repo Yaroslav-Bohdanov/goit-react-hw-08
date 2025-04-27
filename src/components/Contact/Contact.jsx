@@ -19,23 +19,25 @@ const Contact = ({ id, name, number }) => {
   };
 
   return (
-    <div className={style.contactItem}>
-      <p className={style.contactItemText}>
-        <FaUser />
-        {name}
-      </p>
-      <p className={style.contactItemText}>
-        <FaPhoneAlt />
-        {number}
-      </p>
-      <button
-        className={style.buttonDeleteContact}
-        onClick={handleDelete}
-        type="button"
-      >
-        Delete
-      </button>
-    </div>
+    <>
+      <div className={style.contactItem}>
+        <p className={style.contactItemText}>
+          <FaUser />
+          {name}
+        </p>
+        <p className={style.contactItemText}>
+          <FaPhoneAlt />
+          {number}
+        </p>
+        <button
+          className={style.buttonDeleteContact}
+          onClick={handleDelete}
+          type="button"
+        >
+          Delete
+        </button>
+      </div>
+    </>
   );
 };
 
