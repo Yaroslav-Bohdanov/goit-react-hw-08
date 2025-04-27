@@ -44,7 +44,7 @@ export const logoutThunk = createAsyncThunk("auth/logout", async () => {
 export const refreshUserThunk = createAsyncThunk(
   "auth/refresh",
   async (_, { getState }) => {
-    const token = getState().authorization.token;
+    const token = getState().auth.token;
     if (!token) throw new Error("No token");
     const response = await authentificationInstance.get("/users/current", {
       headers: { Authorization: `Bearer ${token}` },
